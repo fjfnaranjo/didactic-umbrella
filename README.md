@@ -92,7 +92,7 @@ Find the code for this part in the 'improved-couscous' repository.
                    ┴
                    │
    ┌────────────── │ ────────────────────────────────────────────────┐
-   │               │                                             AWS │
+   │               │                                       AWS Cloud │
    │     ┌─────────▼───────────┐    ┌─────────────────────┐          │
    │     │ << CloudFront >>  □ │    │ << API Gateway >> □ │          │
    │     │                     ├────►                     ├───────┐  │
@@ -105,16 +105,16 @@ Find the code for this part in the 'improved-couscous' repository.
    │         │   │   << Lambda >>  □ │    │  << DynamoBD >>  □ │     │
    │         └───►                   ├────►                    │     │
    │             │       hello       │    │       hello        │     │
-   │             └───────▲──────▲────┘    └────────────────────┘     │
-   │                     │      │                                    │
-   └──────────────────── │ ──── │ ───────────────────────────────────┘
-                         │      │
-            ┌────────────┘      │
-            │                   │
+   │             └──▲─────────────▲──┘    └────────────────────┘     │
+   │                │             │                                  │
+   └─────────────── │ ─────────── │ ─────────────────────────────────┘
+                    │             │
+       ┌────────────┘             │
+       │                          │
 
-            0                   0
-            ┼ GitHub Actions    ┼  API Developer (zappa)
-            ┴                   ┴
+       0                          0
+       ┼ GitHub Actions (zappa)   ┼  API Developer (zappa)
+       ┴                          ┴
 ```
 
 ## Proposal caveats and further discussion
