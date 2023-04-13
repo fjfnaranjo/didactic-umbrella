@@ -52,7 +52,7 @@ Said that, the approach I suggest has its own caveats. I will elaborate on them
 later. But for now, the general description of the proposal goes as follow:
 
 * The API will be deployed as a Lambda cloud function.
-* The state of the API will be stored in a DynamoBD table.
+* The state of the API will be stored in a DynamoDB table.
 * In front of the API, an API Gateway will be configured.
 * Finally, in front of the API Gateway, a CloudFront distribution.
 
@@ -71,7 +71,7 @@ possible solution and I don't have to deal with the extra complexity of
 asynchronous code (because each call to the API will be serve as a single call
 to a function).
 * Boto3: Is already needed by Zappa and it will allow the application to
-interface with DynamoBD easily.
+interface with DynamoDB easily.
 
 Zappa will handle the packaging of the function code and the deployment to
 Lambda. It's a very popular tool and integrates very well with other AWS
@@ -102,7 +102,7 @@ Find the code for this part in the 'improved-couscous' repository.
    │         ┌────────────────────────────────────────────────────┘  │
    │         │                                                       │
    │         │   ┌───────────────────┐    ┌────────────────────┐     │
-   │         │   │   << Lambda >>  □ │    │  << DynamoBD >>  □ │     │
+   │         │   │   << Lambda >>  □ │    │  << DynamoDB >>  □ │     │
    │         └───►                   ├────►                    │     │
    │             │       hello       │    │       hello        │     │
    │             └──▲─────────────▲──┘    └────────────────────┘     │
