@@ -119,8 +119,64 @@ Find the code for this part in the 'improved-couscous' repository.
 
 ## Proposal caveats and further discussion
 
-### Caveats
+### Caveats and future improvements
+The most concerning problem about this solution is that the developer has
+direct access to the production infrastructure. A botched Zappa deploy can take
+the service down. With the GitHub action automation, this is even more
+dangerous because creating a new release in GitHub is pretty easy. The proposal
+is presented as it is for simplicity but this problem has a simple fix. The
+infrastructure definitions can be modified to have two (or more) stages and
+sharing only the appropriate credentials. Also, the credentials themselves can
+reside only on the GitHub action secrets and proper permissions can be set to
+key people in the team to stablish manual verification steps in the CI/CD
+chain. Further integration tests and other checks can be implemented to make
+the deployments safer.
 
-### Future improvement
+The second big caveat is how tied to AWS is this solution. Migrating to EC2
+instances or Compute VMs would be the next step to make the API independent
+from Amazon. A simple host with a MongoDB server and as many hosts as needed
+with the API (under some autoscale solution) combined with asynchronous code
+will keep the cost efficiency down. Packing the API as a OCI container image
+and using an existing K8s platform can keep the implementation of the CI/CD
+straightforward. We will have to replace the DynamoDB backup service with a
+custom implementation to save the MongoDB data with the desired frequency.
+
+Another point to take into account is that AWS deployments are not usually this
+easy. Some AWS services require configuration of VPNs, virtual network devices
+and a variety of bridges to keep everything connected. This components require
+extra know-how and maintenance/upgrade considerations. For this case, only
+non-VPN services are used, but if cost efficiency becomes a problem in the
+future other services will eventually appear in the equation.
+
+Finally, I'm not exactly sure about the usage/cost curve of this solution
+versus Google related services like Firebase. Without concrete data about the
+expected loads I cannot conduct further research. In any case, if the existing
+team is more experienced and tied to Google, using Firebase Realtime Database
+and Cloud Functions is a similar option to consider if the usage is expected to
+be low.
 
 ### SRE considerations (part of point 3 in code test)
+As a SRE, the first thing you need to consider is how much information do you
+have on the platform behavior. AWS Lambda can be easily integrated with
+CloudWatch to have detailed graphs about its behavior. AWS X-Ray integration is
+also easy, for APMs. Proper use of CloudWatch alarms and SNS will keep the
+support team up to the date with any impaired performance. All of this are just
+extra definitions/parameters in the Terraform module files.
+
+About formal SLAs, its very difficult to outperform AWS/Google/Azure in this
+field. And this solution doesn't introduce points of failure that cannot be
+mitigated with proper testing/backups.
+
+Future scaling of the platform is already discussed, but to reiterate, if this
+goes up to several MAUs per day, the serverless approach is not going to be
+enough (or cheap). Leveraging managed hosts and K8s is going to be the most
+reasonable path. The solution its so easy in its design that the only criteria
+we can use to shard the data is the API username. If other headers are sent by
+the clients we can use them too (like geolocation, for regional base sharding).
+
+Finally, compliance with data regulations is always a difficult task. A
+parallel system that loads, modifies, test and stores the backups will be
+needed for GDPR as a minimum. If you give me a more complex case I can
+elaborate more, but legal compliance should be always checked with an
+specialized legal team that follows the developments in the field and review
+the processes with the SRE team.
