@@ -44,9 +44,6 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html .
 > test order in the section headers.
 
 ### Configuration and deployment part (point 3 in the code test)
-
-> NOTE: The 'fuzzy-chainsaw' repository will handle this part.
-
 The requested task fits very well into the serverless case. The API is simple,
 it has a straightforward business logic and the time restriction associated to
 any code test encourages an easy to deploy solution.
@@ -71,10 +68,10 @@ is some of the security mitigation strategies I've followed in the past to
 harden the infrastructure against potentially unsafe libraries used by the API
 developers. Again, further improvements to security will be discussed later.
 
+To deploy the mentioned resources, follow the instructions in the
+'fuzzy-chainsaw' repository.
+
 ### API part (point 1 in the code test)
-
-> NOTE: The 'improved-couscous' repository will handle this part.
-
 I'm mainly a Python developer, so the function will be developed using Python
 with just two runtime dependencies:
 
@@ -94,6 +91,13 @@ pytest and static analysis tools, the quality requirements for the task will be
 easy to achieve.
 
 CI/CD will be implemented as GitHub actions.
+
+The 'improved-couscous' repository has the instructions to run common tasks
+used during development. This instructions cover basic development tasks and
+the actual Zappa deployment. The GitHub action in the repository is configured
+with the secrets needed for my own instance of the code. You will have to clone
+the repository and provide a new set of credentials in the repository settings
+if you want to use the GitHub action to deploy. Request assistance if needed.
 
 ### Deployment diagram (point 2 in the code test)
 ```
