@@ -10,16 +10,15 @@ contents.
 ## Submission structure, compatibility and requirements
 The submission consists of 3 different repositories.
 
-* This one: Giving a general defense for the decisions I took and keeping the
-code for the requested diagram.
+* This one: Keeps a general defense for the decisions I took and the diagram.
+* https://github.com/fjfnaranjo/fuzzy-chainsaw: With the infrastructure code.
 * https://github.com/fjfnaranjo/improved-couscous: With the API.
-* https://github.com/fjfnaranjo/fuzzy-chainsaw: With the configuration code.
 
-### Running the code in the respositories
-The code in the last two repositories should be easy to run in any POSIX shell
-with access to the `docker` and `docker-compose` commands. A `Makefile` file
-will be provided that can be use directly or as a reference for the commands
-needed. Check for specific running instructions in each repository `README.md`.
+### Working with the contents of the repositories
+The repositories should be easy to try in any POSIX shell with access to the
+`docker` command. A `Makefile` file will be provided that can be use directly
+or as a reference for the commands needed. Check for specific running
+instructions in each repository `README.md`.
 
 I'm developing using Debian stable and I haven't taken portability with MacOS
 into account, but if you are using Mac you should be able to run it without any
@@ -30,8 +29,9 @@ Also, I'm not considering WSL compatibility. Again, feel free to ask me if you
 find any problems.
 
 ### AWS credentials
-Running the configuration files in the 'fuzzy-chainsaw' repository will require
-a set of valid AWS credentials.
+Applying the configuration files in the 'fuzzy-chainsaw' repository will
+require a set of valid AWS credentials. The same applies to running the Zappa
+command in 'improved-couscous'.
 
 The tooling assumes the credentials will be available in the environment. Check
 https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html .
@@ -44,25 +44,37 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html .
 > test order in the section headers.
 
 ### Configuration and deployment part (point 3 in the code test)
+
+> NOTE: The 'fuzzy-chainsaw' repository will handle this part.
+
 The requested task fits very well into the serverless case. The API is simple,
 it has a straightforward business logic and the time restriction associated to
 any code test encourages an easy to deploy solution.
 
 Said that, the approach I suggest has its own caveats. I will elaborate on them
-later. But for now, the general description of the proposal goes as follow:
+later. But for now, the general description of the proposal goes as follows:
 
 * The API will be deployed as a Lambda cloud function.
 * The state of the API will be stored in a DynamoDB table.
-* In front of the API, an API Gateway will be configured.
-* Finally, in front of the API Gateway, a CloudFront distribution.
+* In front of the API, Zappa will configure an API Gateway.
+* Finally, in front of the API Gateway, an equivalent to a CloudFront
+distribution will be created because Zappa will deploy a Edge-optimized
+endpoint.
 
-On the configuration/deployment side, this should be enough for now. Future
-improvements will be also discussed later, but for now, the absence of VPN
-dependant services will make the things even easier.
+Future improvements will be also discussed later, but for now, the absence of
+VPN dependant services will make the things even easier.
 
-The 'fuzzy-chainsaw' repository will handle this first part.
+I guessing this approach makes the configuration part of the code test lighter
+than expected. To compensate, I will spend some time creating a safer set of
+permissions than the permissions Zappa creates by itself for the API code. This
+is some of the security mitigation strategies I've followed in the past to
+harden the infrastructure against potentially unsafe libraries used by the API
+developers. Again, further improvements to security will be discussed later.
 
 ### API part (point 1 in the code test)
+
+> NOTE: The 'improved-couscous' repository will handle this part.
+
 I'm mainly a Python developer, so the function will be developed using Python
 with just two runtime dependencies:
 
@@ -82,8 +94,6 @@ pytest and static analysis tools, the quality requirements for the task will be
 easy to achieve.
 
 CI/CD will be implemented as GitHub actions.
-
-Find the code for this part in the 'improved-couscous' repository.
 
 ### Deployment diagram (point 2 in the code test)
 ```
